@@ -11,8 +11,11 @@ export MLB=
 export SystemProductName=
 export SystemSerialNumber=
 export SystemUUID=
+export ROM=
 ```
 and then run command
+
+Normaly, `ROM` is your MAC address without `:`, like your MAC is `00:45:36:45:f2:00 `, and your ROM var is `00453645f200`
 
 ```
 cd CoffeeLakeOpenCoreAutuConfig

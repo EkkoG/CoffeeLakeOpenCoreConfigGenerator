@@ -1,5 +1,6 @@
 import plistlib
 import os
+import binascii
 
 ACPI_ADD =  [{'Comment': '', 'Enabled': True, 'Path': 'SSDT-AWAC.aml'}, {'Comment': '', 'Enabled': True, 'Path': 'SSDT-EC-USBX-DESKTOP.aml'}, {'Comment': '', 'Enabled': True, 'Path': 'SSDT-PLUG-DRTNIA.aml'}, {'Comment': '', 'Enabled': True, 'Path': 'SSDT-PMC.aml'}]
 
@@ -47,10 +48,12 @@ with open('tmp/EFI/OC/config.plist','rb') as f:
     r['NVRAM']['WriteFlash'] = True
 
     r['PlatformInfo']['Generic']['MLB'] = os.environ['MLB']
+    r['PlatformInfo']['Generic']['ROM'] = binascii.unhexlify(os.environ['ROM'])
     r['PlatformInfo']['Generic']['SystemProductName'] = os.environ['SystemProductName']
     r['PlatformInfo']['Generic']['SystemSerialNumber'] = os.environ['SystemSerialNumber']
     r['PlatformInfo']['Generic']['SystemUUID'] = os.environ['SystemUUID']
 
+    # print(r['Kernel']['Add'])
     drivers = ['HfsPlus.efi', 'OpenRuntime.efi']
 
     r['UEFI']['Drivers'] = drivers
