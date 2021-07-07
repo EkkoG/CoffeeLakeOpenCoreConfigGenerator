@@ -44,6 +44,7 @@ with open('tmp/EFI/OC/config.plist','rb') as f:
     r['Misc']['Security']['Vault'] = 'Optional'
 
     r['NVRAM']['Add']['7C436110-AB2A-4BBB-A880-FE41995C9F82']['boot-args'] = 'debug=0x100 keepsyms=1 alcid=1'
+    # r['NVRAM']['Add']['7C436110-AB2A-4BBB-A880-FE41995C9F82']['csr-active-config'] = bytearray.fromhex('67000000')
     r['NVRAM']['Add']['7C436110-AB2A-4BBB-A880-FE41995C9F82']['prev-lang:kbd'] = b''
     r['NVRAM']['WriteFlash'] = True
 
