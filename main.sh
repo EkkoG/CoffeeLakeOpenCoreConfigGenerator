@@ -78,6 +78,8 @@ download_source() {
     download_kext intelmaus https://github.com/acidanthera/IntelMausi/releases/download/${intelmausi_latest}/IntelMausi-${intelmausi_latest}-RELEASE.zip IntelMausi.kext tmp/EFI/OC/Kexts
     nvmefix_latest=$(get_latest_release "acidanthera/NVMeFix")
     download_kext nvmefix https://github.com/acidanthera/NVMeFix/releases/download/${nvmefix_latest}/NVMeFix-${nvmefix_latest}-RELEASE.zip NVMeFix.kext tmp/EFI/OC/Kexts
+    cpu_latest=$(get_latest_release "acidanthera/CPUFriend")
+    download_kext cpufriend https://github.com/acidanthera/CPUFriend/releases/download/${cpu_latest}/CPUFriend-${cpu_latest}-RELEASE.zip CPUFriend.kext tmp/EFI/OC/Kexts
 
     download_plain_file https://github.com/dortania/Getting-Started-With-ACPI/raw/master/extra-files/compiled/SSDT-PLUG-DRTNIA.aml tmp/EFI/OC/ACPI
     download_plain_file https://github.com/dortania/Getting-Started-With-ACPI/raw/master/extra-files/compiled/SSDT-AWAC.aml tmp/EFI/OC/ACPI
@@ -86,6 +88,10 @@ download_source() {
 }
 
 download_source
+
+if [ -d kexts ]; then
+    cp -r kexts/* tmp/EFI/OC/Kexts
+fi
 
 source .env
 python3 main.py

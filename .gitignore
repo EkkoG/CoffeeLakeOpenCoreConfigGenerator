@@ -1,3 +1,4 @@
 tmp/
 .env*
 .DS_Store
+kexts/CPUFriendDataProvider.kext
