@@ -15,6 +15,9 @@ function download_plain_file() {
 }
 
 function download_kext() {
+    local url=$1
+    local kext_filename=$2
+
     local tmp_dir=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo '')
    
     local path=/tmp/$tmp_dir
@@ -23,18 +26,18 @@ function download_kext() {
     mkdir -p $path
     pushd /tmp/$tmp_dir
 
-    url=$1
     wget -q $url
     local filename="${url##*/}"
     unzip $filename > /dev/null
     ls
 
     popd
-    cp -r "$path/$2" dist/EFI/OC/Kexts
+    cp -r "$path/$kext_filename" dist/EFI/OC/Kexts
 }
 
 function get_latest_release() {
     local url=https://api.github.com/repos/$1/releases/latest
+
     curl --silent "$url" | # Get latest release from GitHub api
         grep '"tag_name":' |                                            # Get tag line
         sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
@@ -61,6 +64,7 @@ function download_oc() {
 function download_acidanthera_kext() {
     local kext=$1
     local filename=$2
+
     if [ -z $2 ]; then
         filename=$1.kext
     fi
