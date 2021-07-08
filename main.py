@@ -8,7 +8,7 @@ Kernel_Add = [{'Arch': 'x86_64', 'BundlePath': 'Lilu.kext', 'Comment': 'Patch en
 
 DeviceProperties_ADD = {'PciRoot(0x0)/Pci(0x1b,0x0)': {'layout-id': b'\x01\x00\x00\x00'}, 'PciRoot(0x0)/Pci(0x2,0x0)': {'AAPL,ig-platform-id': b'\x03\x00\x91>', 'framebuffer-patch-enable': b'\x01\x00\x00\x00', 'framebuffer-stolenmem': b'\x00\x000\x01'}}
 
-with open('tmp/EFI/OC/config.plist','rb') as f:
+with open('dist/EFI/OC/config.plist','rb') as f:
     r = plistlib.load(f)
 
     r['ACPI']['Add'] = ACPI_ADD

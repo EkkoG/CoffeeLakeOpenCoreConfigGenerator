@@ -22,7 +22,7 @@ cd CoffeeLakeOpenCoreAutuConfig
 ./main.sh
 ```
 
-after do these, a EFI will located at `tmp/EFI`
+after do these, a EFI will located at `dist/EFI`
 
 check you config, and fix your ROM https://dortania.github.io/OpenCore-Post-Install/universal/iservices.html#fixing-rom
 
