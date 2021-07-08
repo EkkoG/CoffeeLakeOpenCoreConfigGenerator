@@ -61,6 +61,9 @@ function download_oc() {
 function download_acidanthera_kext() {
     local kext=$1
     local filename=$2
+    if [ -z $2 ]; then
+        filename=$1.kext
+    fi
     
     local latest=$(get_latest_release acidanthera/$kext)
     echo "$kext latest version $latest"
@@ -74,15 +77,15 @@ download_oc https://github.com/acidanthera/OpenCorePkg/releases/download/${OPENC
 
 download_source() {
 
-    download_acidanthera_kext Lilu Lilu.kext
+    download_acidanthera_kext Lilu
     download_acidanthera_kext VirtualSMC Kexts/VirtualSMC.kext
     download_acidanthera_kext VirtualSMC Kexts/SMCSuperIO.kext
     download_acidanthera_kext VirtualSMC Kexts/SMCProcessor.kext
-    download_acidanthera_kext WhateverGreen WhateverGreen.kext
-    download_acidanthera_kext AppleALC AppleALC.kext
-    download_acidanthera_kext IntelMausi IntelMausi.kext
-    download_acidanthera_kext NVMeFix NVMeFix.kext
-    download_acidanthera_kext CPUFriend CPUFriend.kext
+    download_acidanthera_kext WhateverGreen 
+    download_acidanthera_kext AppleALC 
+    download_acidanthera_kext IntelMausi 
+    download_acidanthera_kext NVMeFix 
+    download_acidanthera_kext CPUFriend 
 
     download_plain_file https://github.com/acidanthera/OcBinaryData/raw/master/Drivers/HfsPlus.efi dist/EFI/OC/Drivers
     download_plain_file https://github.com/dortania/Getting-Started-With-ACPI/raw/master/extra-files/compiled/SSDT-PLUG-DRTNIA.aml dist/EFI/OC/ACPI
