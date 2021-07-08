@@ -9,25 +9,35 @@ function download_plain_file() {
     local url=$1
     local filename="${url##*/}"
     rm -f $filename
-    wget $url
+    wget -q $url
     popd
     cp /tmp/$filename $2/${filename}
 }
 
 function download_kext() {
-    local path=/tmp/$1
+    local tmp_dir=$(tr -dc A-Za-z0-9 </dev/urandom | head -c 13 ; echo '')
+   
+    local path=/tmp/$tmp_dir
     rm -rf $path
 
     mkdir -p $path
-    pushd /tmp/$1
+    pushd /tmp/$tmp_dir
 
-    url=$2
-    wget $url
+    url=$1
+    wget -q $url
     local filename="${url##*/}"
-    unzip $filename
+    unzip $filename > /dev/null
+    ls
 
     popd
-    cp -r "$path/$3" $4
+    cp -r "$path/$2" dist/EFI/OC/Kexts
+}
+
+function get_latest_release() {
+    local url=https://api.github.com/repos/$1/releases/latest
+    curl --silent "$url" | # Get latest release from GitHub api
+        grep '"tag_name":' |                                            # Get tag line
+        sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
 }
 
 function download_oc() {
@@ -40,7 +50,7 @@ function download_oc() {
     url=$1
     wget $url
     local filename="${url##*/}"
-    unzip $filename
+    unzip $filename > /dev/null
 
     popd
     cp -r "$path/X64/EFI" $2
@@ -48,10 +58,13 @@ function download_oc() {
 
 }
 
-get_latest_release() {
-  curl --silent "https://api.github.com/repos/$1/releases/latest" | # Get latest release from GitHub api
-    grep '"tag_name":' |                                            # Get tag line
-    sed -E 's/.*"([^"]+)".*/\1/'                                    # Pluck JSON value
+function download_acidanthera_kext() {
+    local kext=$1
+    local filename=$2
+    
+    local latest=$(get_latest_release acidanthera/$kext)
+    echo "$kext latest version $latest"
+    download_kext https://github.com/acidanthera/${kext}/releases/download/${latest}/${kext}-${latest}-RELEASE.zip $filename
 }
 
 rm -rf dist
@@ -60,28 +73,18 @@ mkdir -p dist
 download_oc https://github.com/acidanthera/OpenCorePkg/releases/download/${OPENCORE_VERSION}/OpenCore-${OPENCORE_VERSION}-RELEASE.zip dist
 
 download_source() {
-    wget https://github.com/acidanthera/OcBinaryData/raw/master/Drivers/HfsPlus.efi -O dist/EFI/OC/Drivers/HfsPlus.efi 
 
-    lilu_latest=$(get_latest_release "acidanthera/Lilu")
-    echo "Lilu latest version $lilu_latest"
-    download_kext lilu https://github.com/acidanthera/Lilu/releases/download/${lilu_latest}/Lilu-${lilu_latest}-RELEASE.zip Lilu.kext dist/EFI/OC/Kexts
-    virtualsmc_latest=$(get_latest_release "acidanthera/VirtualSMC")
-    download_kext virtualsmc https://github.com/acidanthera/VirtualSMC/releases/download/${virtualsmc_latest}/VirtualSMC-${virtualsmc_latest}-RELEASE.zip Kexts/VirtualSMC.kext dist/EFI/OC/Kexts
-    download_kext virtualsmc https://github.com/acidanthera/VirtualSMC/releases/download/${virtualsmc_latest}/VirtualSMC-${virtualsmc_latest}-RELEASE.zip Kexts/SMCSuperIO.kext dist/EFI/OC/Kexts
-    download_kext virtualsmc https://github.com/acidanthera/VirtualSMC/releases/download/${virtualsmc_latest}/VirtualSMC-${virtualsmc_latest}-RELEASE.zip Kexts/SMCProcessor.kext dist/EFI/OC/Kexts
+    download_acidanthera_kext Lilu Lilu.kext
+    download_acidanthera_kext VirtualSMC Kexts/VirtualSMC.kext
+    download_acidanthera_kext VirtualSMC Kexts/SMCSuperIO.kext
+    download_acidanthera_kext VirtualSMC Kexts/SMCProcessor.kext
+    download_acidanthera_kext WhateverGreen WhateverGreen.kext
+    download_acidanthera_kext AppleALC AppleALC.kext
+    download_acidanthera_kext IntelMausi IntelMausi.kext
+    download_acidanthera_kext NVMeFix NVMeFix.kext
+    download_acidanthera_kext CPUFriend CPUFriend.kext
 
-    whatevergreen_latest=$(get_latest_release "acidanthera/WhateverGreen")
-    download_kext whatevergreen https://github.com/acidanthera/WhateverGreen/releases/download/${whatevergreen_latest}/WhateverGreen-${whatevergreen_latest}-RELEASE.zip WhateverGreen.kext dist/EFI/OC/Kexts
-
-    applealc_latest=$(get_latest_release "acidanthera/AppleALC")
-    download_kext applealc https://github.com/acidanthera/AppleALC/releases/download/${applealc_latest}/AppleALC-${applealc_latest}-RELEASE.zip AppleALC.kext dist/EFI/OC/Kexts
-    intelmausi_latest=$(get_latest_release "acidanthera/IntelMausi")
-    download_kext intelmaus https://github.com/acidanthera/IntelMausi/releases/download/${intelmausi_latest}/IntelMausi-${intelmausi_latest}-RELEASE.zip IntelMausi.kext dist/EFI/OC/Kexts
-    nvmefix_latest=$(get_latest_release "acidanthera/NVMeFix")
-    download_kext nvmefix https://github.com/acidanthera/NVMeFix/releases/download/${nvmefix_latest}/NVMeFix-${nvmefix_latest}-RELEASE.zip NVMeFix.kext dist/EFI/OC/Kexts
-    cpu_latest=$(get_latest_release "acidanthera/CPUFriend")
-    download_kext cpufriend https://github.com/acidanthera/CPUFriend/releases/download/${cpu_latest}/CPUFriend-${cpu_latest}-RELEASE.zip CPUFriend.kext dist/EFI/OC/Kexts
-
+    download_plain_file https://github.com/acidanthera/OcBinaryData/raw/master/Drivers/HfsPlus.efi dist/EFI/OC/Drivers
     download_plain_file https://github.com/dortania/Getting-Started-With-ACPI/raw/master/extra-files/compiled/SSDT-PLUG-DRTNIA.aml dist/EFI/OC/ACPI
     download_plain_file https://github.com/dortania/Getting-Started-With-ACPI/raw/master/extra-files/compiled/SSDT-AWAC.aml dist/EFI/OC/ACPI
     download_plain_file https://github.com/dortania/Getting-Started-With-ACPI/raw/master/extra-files/compiled/SSDT-EC-USBX-DESKTOP.aml dist/EFI/OC/ACPI
