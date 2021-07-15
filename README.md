@@ -1,8 +1,9 @@
 Auomate script follow by https://dortania.github.io/OpenCore-Install-Guide/config.plist/coffee-lake.html
 
-For Coffee Lake CPUs, test on 8700K+Z370m-D3H
+For Coffee Lake CPUs, test on 8700K+Z370m-D3H and version both macOS 11 and 12.
 
-#Usage
+
+### Usage
 
 first create a `.env` file, with content like this
 
