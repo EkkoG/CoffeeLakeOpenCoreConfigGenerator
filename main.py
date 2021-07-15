@@ -40,7 +40,7 @@ with open('dist/EFI/OC/config.plist','rb') as f:
     r['Misc']['Security']['AllowNvramReset'] = True
     r['Misc']['Security']['AllowSetDefault'] = True
     r['Misc']['Security']['ScanPolicy'] = 0
-    r['Misc']['Security']['SecureBootModel'] = 'Default'
+    r['Misc']['Security']['SecureBootModel'] = 'Disabled'
     r['Misc']['Security']['Vault'] = 'Optional'
 
     r['NVRAM']['Add']['7C436110-AB2A-4BBB-A880-FE41995C9F82']['boot-args'] = 'debug=0x100 keepsyms=1 alcid=1'
