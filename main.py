@@ -55,7 +55,7 @@ with open('dist/EFI/OC/config.plist','rb') as f:
     r['PlatformInfo']['Generic']['SystemUUID'] = os.environ['SystemUUID']
 
     # print(r['Kernel']['Add'])
-    drivers = ['HfsPlus.efi', 'OpenRuntime.efi']
+    drivers = [dict(Arguments='',Enabled=True,Path='HfsPlus.efi'), dict(Arguments='',Enabled=True,Path='OpenRuntime.efi')]
 
     r['UEFI']['Drivers'] = drivers
     r['UEFI']['Quirks']['UnblockFsConnect'] = False 

@@ -1,8 +1,9 @@
 #!/bin/bash -e
 
-OPENCORE_VERSION=0.7.2
+OPENCORE_VERSION=0.7.4
 
 function download_plain_file() {
+    echo $1
     local path=/tmp
     pushd /tmp
 
@@ -71,7 +72,9 @@ function download_acidanthera_kext() {
     
     local latest=$(get_latest_release acidanthera/$kext)
     echo "$kext latest version $latest"
-    download_kext https://github.com/acidanthera/${kext}/releases/download/${latest}/${kext}-${latest}-RELEASE.zip $filename
+    url=https://github.com/acidanthera/${kext}/releases/download/${latest}/${kext}-${latest}-RELEASE.zip
+    echo $url
+    download_kext $url $filename
 }
 
 rm -rf dist
@@ -91,13 +94,14 @@ download_source() {
     download_acidanthera_kext NVMeFix 
     download_acidanthera_kext CPUFriend 
 
-    download_plain_file https://github.com/acidanthera/OcBinaryData/raw/master/Drivers/HfsPlus.efi dist/EFI/OC/Drivers
-    download_plain_file https://github.com/dortania/Getting-Started-With-ACPI/raw/master/extra-files/compiled/SSDT-PLUG-DRTNIA.aml dist/EFI/OC/ACPI
-    download_plain_file https://github.com/dortania/Getting-Started-With-ACPI/raw/master/extra-files/compiled/SSDT-AWAC.aml dist/EFI/OC/ACPI
-    download_plain_file https://github.com/dortania/Getting-Started-With-ACPI/raw/master/extra-files/compiled/SSDT-EC-USBX-DESKTOP.aml dist/EFI/OC/ACPI
-    download_plain_file https://github.com/dortania/Getting-Started-With-ACPI/raw/master/extra-files/compiled/SSDT-PMC.aml dist/EFI/OC/ACPI
+    download_plain_file https://ghproxy.com/https://github.com/acidanthera/OcBinaryData/raw/master/Drivers/HfsPlus.efi dist/EFI/OC/Drivers
+    download_plain_file https://ghproxy.com/https://github.com/dortania/Getting-Started-With-ACPI/raw/master/extra-files/compiled/SSDT-PLUG-DRTNIA.aml dist/EFI/OC/ACPI
+    download_plain_file https://ghproxy.com/https://github.com/dortania/Getting-Started-With-ACPI/raw/master/extra-files/compiled/SSDT-AWAC.aml dist/EFI/OC/ACPI
+    download_plain_file https://ghproxy.com/https://github.com/dortania/Getting-Started-With-ACPI/raw/master/extra-files/compiled/SSDT-EC-USBX-DESKTOP.aml dist/EFI/OC/ACPI
+    download_plain_file https://ghproxy.com/https://github.com/dortania/Getting-Started-With-ACPI/raw/master/extra-files/compiled/SSDT-PMC.aml dist/EFI/OC/ACPI
 }
 
+echo "开始下载 kext efi"
 download_source
 
 if [ -d kexts ]; then
